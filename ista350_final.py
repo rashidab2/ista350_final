@@ -1,3 +1,12 @@
+"""Author: Rashid Jama Abdi
+Section Leader: Sara
+Date: 11/18/24
+ISTA 350 final Project
+The projects is about webscraping three nba links and taking the Advance 
+table in the website, the table includes stats about the players, and 
+in the code below I will be creating three visulizations, 
+Radar chart, bar Chart and scatter plot with linear regression lines:"""
+
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
