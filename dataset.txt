@@ -1,0 +1,14 @@
+Group Memebers: Rashid Abdi
+Links: https://www.basketball-reference.com/teams/GSW/2025.html
+       https://www.basketball-reference.com/teams/PHO/2025.html
+       https://www.basketball-reference.com/teams/LAL/2025.html
+
+For my project, I plan to analyze player performance across different NBA teams.
+
+Golden State Warriors Player Stats: This dataset provides comprehensive statistics for players on the Golden State Warriors, offering insights into their performance metrics, efficiency, and overall contribution to the team.
+
+Phoenix Suns Player Stats: This dataset includes detailed player statistics from the Phoenix Suns, allowing for analysis of individual and team performance dynamics.
+
+Los Angeles Lakers Player Stats: This dataset features player statistics for the Los Angeles Lakers, providing a view of player efficiency, usage, and impact on the court.
+
+These datasets will enable a thorough comparison of player performance across teams, focusing on metrics such as Player Efficiency Rating (PER), Usage Rate (USG%), and True Shooting Percentage (TS%). Alternatively, I may consider scraping new data directly from NBA sources to gather more recent information. This would allow me to compare how player performance metrics have evolved over time, particularly in terms of team strategies and player roles.
