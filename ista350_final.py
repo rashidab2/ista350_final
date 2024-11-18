@@ -31,37 +31,27 @@ def create_dataframe_from_url(url, table_id):
     else:
         print(f"Table not found or data is empty for URL: {url}")
         return pd.DataFrame()
-
+# Funtion to create player radar charts
 def radar_chart(df, selected_players):
-    # Define the metrics to be used in the radar chart
     metrics = ['PER', 'TS%', 'AST%', 'TRB%', 'STL%']
     categories = metrics
     N = len(categories)
-    # Convert necessary columns to numeric for the entire DataFrame
     for metric in metrics:
         df[metric] = pd.to_numeric(df[metric], errors='coerce')
-    # Create a radar chart for each player
     for player in selected_players:
-        # Extract the player's data
         player_data = df[df['Player'] == player][metrics].copy()
-        # Print the player's data to verify
         print(f"\nData for {player}:")
         print(player_data)
-        # Skip if there is missing data
         if player_data.isnull().values.any():
             print(f"Missing data for {player}. Skipping chart.")
             continue
-        # Normalize the metrics using global max/min
         global_max = df[metrics].max()
         global_min = df[metrics].min()
         normalized_data = (player_data - global_min) / (global_max - global_min)
-        # Prepare data for plotting
         player_stats = normalized_data.values.flatten().tolist()
-        player_stats += player_stats[:1]  # Repeat the first value to close the circle
-        # Compute angle for each axis
+        player_stats += player_stats[:1]
         angles = [n / float(N) * 2 * pi for n in range(N)]
         angles += angles[:1]
-        # Plot radar chart
         fig, ax = plt.subplots(subplot_kw=dict(polar=True), figsize=(6, 6))
         ax.set_theta_offset(pi / 2)
         ax.set_theta_direction(-1)
@@ -76,11 +66,9 @@ def radar_chart(df, selected_players):
 
 # Function to create grouped bar chart for team comparison
 def team_comparison_bar_chart(df):
-    # Metrics to compare
     metrics = ['PER', 'BPM', 'WS/48']
     for metric in metrics:
         df[metric] = pd.to_numeric(df[metric], errors='coerce')
-    # Calculate average metrics for each team
     team_averages = df.groupby('Team')[metrics].mean().reset_index()
     fig, ax = plt.subplots(figsize=(10, 6))
     bar_width = 0.25
@@ -109,11 +97,8 @@ def calculate_correlation(x, y):
 
 # Function to create separate scatter plots with linear regression for each team
 def usage_vs_efficiency_scatter_plot(df):
-    # Convert necessary columns to numeric
     df['USG%'] = pd.to_numeric(df['USG%'], errors='coerce')
     df['TS%'] = pd.to_numeric(df['TS%'], errors='coerce')
-
-    # Drop rows with missing values in USG% or TS%
     df = df.dropna(subset=['USG%', 'TS%'])
 
     teams = df['Team'].unique()
@@ -121,18 +106,14 @@ def usage_vs_efficiency_scatter_plot(df):
 
     for team in teams:
         team_data = df[df['Team'] == team]
-
         plt.figure(figsize=(8, 6))
         plt.scatter(team_data['USG%'], team_data['TS%'], c=colors[team], label=team, alpha=0.6, edgecolors='w', s=100)
-
-        # Linear regression for each team
         X = team_data[['USG%']].values
         y = team_data['TS%'].values
         model = LinearRegression().fit(X, y)
         X_range = np.linspace(X.min(), X.max(), 100).reshape(-1, 1)
         y_pred = model.predict(X_range)
         plt.plot(X_range, y_pred, color='black', linewidth=2)
-
         # Calculate and display correlation
         correlation = calculate_correlation(X.flatten(), y)
         plt.title(f'Usage vs. Efficiency for {team}\nCorrelation: r={correlation:.2f}')
@@ -145,7 +126,6 @@ def usage_vs_efficiency_scatter_plot(df):
 
 
 def main():
-    # List of URLs to scrape
     urls = [
         'https://www.basketball-reference.com/teams/GSW/2025.html',
         'https://www.basketball-reference.com/teams/PHO/2025.html',
@@ -154,17 +134,13 @@ def main():
 
     # Table ID for the "Advanced Stats" table
     table_id = 'advanced'
-
-    # List to store DataFrames for each URL
     all_dataframes = []
-
     for url in urls:
-        team_name = url.split('/')[-2]  # Extract team name from URL
+        team_name = url.split('/')[-2]
         df = create_dataframe_from_url(url, table_id)
         if not df.empty:
-            df['Team'] = team_name  # Add a column for the team name
+            df['Team'] = team_name
             all_dataframes.append(df)
-
     # Combine all DataFrames into one
     combined_df = pd.concat(all_dataframes, ignore_index=True)
     print(combined_df)
@@ -173,10 +149,10 @@ def main():
     selected_players = ['Stephen Curry', 'Kevin Durant', 'LeBron James']
 
     # Generate radar chart
-    #radar_chart(combined_df, selected_players)
+    radar_chart(combined_df, selected_players)
 
     # Generate team comparison bar chart
-    #team_comparison_bar_chart(combined_df)
+    team_comparison_bar_chart(combined_df)
 
     # Generate scatter plot
     usage_vs_efficiency_scatter_plot(combined_df)
